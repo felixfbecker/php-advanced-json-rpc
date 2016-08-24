@@ -34,6 +34,17 @@ class Response extends Message
     public $error;
 
     /**
+     * A message is considered a Response if it has an ID and either a result or an error
+     *
+     * @param object $msg A decoded message body
+     * @return bool
+     */
+    public static function isResponse($msg): bool
+    {
+        return is_object($msg) && isset($msg->id) && (isset($msg->result) || isset($msg->error));
+    }
+
+    /**
      * @param int|string $id
      * @param mixed $result
      * @param ResponseError $error

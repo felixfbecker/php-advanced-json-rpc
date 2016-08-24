@@ -39,6 +39,17 @@ class Request extends Message
     public $params;
 
     /**
+     * A message is considered a Request if it has an ID and a method.
+     *
+     * @param object $msg A decoded message body
+     * @return bool
+     */
+    public static function isRequest($msg): bool
+    {
+        return is_object($msg) && isset($msg->id) && isset($msg->method);
+    }
+
+    /**
      * @param string|int $id
      * @param string $method
      * @param object|array $params

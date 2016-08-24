@@ -34,6 +34,17 @@ abstract class Notification extends Message
     public $params;
 
     /**
+     * A message is considered a Notification if it has a method but no ID.
+     *
+     * @param object $msg A decoded message body
+     * @return bool
+     */
+    public static function isNotification($msg): bool
+    {
+        return is_object($msg) && !isset($msg->id) && isset($msg->method);
+    }
+
+    /**
      * @param string $method
      * @param mixed $params
      */
