@@ -56,14 +56,16 @@ class Dispatcher
     /**
      * Calls the appropiate method handler for an incoming Message
      *
-     * @param string $msg The incoming message
+     * @param string|object $msg The incoming message
      * @return Result|void
      */
     public function dispatch($msg)
     {
-        $msg = json_decode($msg);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new ResponseError(json_last_error_msg(), ErrorCode::PARSE_ERROR);
+        if (is_string($msg)) {
+            $msg = json_decode($msg);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new ResponseError(json_last_error_msg(), ErrorCode::PARSE_ERROR);
+            }
         }
         // Find out the object and function that should be called
         $obj = $this->target;
