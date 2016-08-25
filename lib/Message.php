@@ -23,7 +23,7 @@ abstract class Message
      */
     public static function parse(string $msg): Message
     {
-        $decoded = json_decode($this->buffer);
+        $decoded = json_decode($msg);
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new ResponseError(json_last_error_msg(), ErrorCode::PARSE_ERROR);
         }
