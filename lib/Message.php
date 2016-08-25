@@ -3,8 +3,6 @@ declare(strict_types = 1);
 
 namespace AdvancedJsonRpc;
 
-use JsonMapper;
-
 /**
  * Base message
  */
