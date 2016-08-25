@@ -13,7 +13,7 @@ abstract class Message
      *
      * @var string
      */
-    public $jsonrpc;
+    public $jsonrpc = '2.0';
 
     /**
      * Returns the appropiate Message subclass
