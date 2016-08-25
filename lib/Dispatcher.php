@@ -160,6 +160,7 @@ class Dispatcher
                 $args[$position] = $value;
             }
         }
+        ksort($args);
         $result = $obj->$fn(...$args);
         return $result;
     }
