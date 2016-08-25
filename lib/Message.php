@@ -28,14 +28,11 @@ abstract class Message
             throw new ResponseError(json_last_error_msg(), ErrorCode::PARSE_ERROR);
         }
         if (Notification::isNotification($decoded)) {
-            $obj = new Notification;
+            $obj = new Notification($decoded->method, $decoded->params ?? null);
         } else if (Request::isRequest($decoded)) {
-            $obj = new Request;
+            $obj = new Request($decoded->id, $decoded->method, $decoded->params ?? null);
         } else if (Request::isResponse($decoded)) {
-            $obj = new Response;
-        }
-        foreach (get_object_vars($decoded) as $key => $value) {
-            $obj->$key = $value;
+            $obj = new Response($decoded->id, $decoded->result ?? null, $decoded->error ?? null);
         }
         return $obj;
     }
