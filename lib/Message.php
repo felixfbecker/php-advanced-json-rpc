@@ -31,7 +31,7 @@ abstract class Message
             $obj = new Notification($decoded->method, $decoded->params ?? null);
         } else if (Request::isRequest($decoded)) {
             $obj = new Request($decoded->id, $decoded->method, $decoded->params ?? null);
-        } else if (Request::isResponse($decoded)) {
+        } else if (Response::isResponse($decoded)) {
             $obj = new Response($decoded->id, $decoded->result ?? null, $decoded->error ?? null);
         }
         return $obj;
