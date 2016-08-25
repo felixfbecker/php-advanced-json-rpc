@@ -51,6 +51,7 @@ class Response extends Message
      */
     public function __construct($id, $result, ResponseError $error = null)
     {
+        $this->id = $id;
         $this->result = $result;
         $this->error = $error;
     }
