@@ -105,13 +105,14 @@ class Dispatcher
                 $args = $msg->params;
             } else if (is_object($msg->params)) {
                 foreach (get_object_vars($msg->params) as $key => $value) {
+                    $position = -1;
                     foreach ($parameters as $pos => $parameter) {
                         if ($parameter->name === $key) {
                             $position = $pos;
                             break;
                         }
                     }
-                    if (!isset($position)) {
+                    if ($position === -1) {
                         // Unknown parameter, ignore
                         continue;
                     }
