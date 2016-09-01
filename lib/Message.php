@@ -3,10 +3,12 @@ declare(strict_types = 1);
 
 namespace AdvancedJsonRpc;
 
+use JsonSerializable;
+
 /**
  * Base message
  */
-abstract class Message
+abstract class Message implements JsonSerializable
 {
     /**
      * A String specifying the version of the JSON-RPC protocol. MUST be exactly "2.0".
@@ -40,5 +42,10 @@ abstract class Message
     public function __toString(): string
     {
         return json_encode($this);
+    }
+
+    public function jsonSerialize()
+    {
+        return ['jsonrpc' => $this->jsonrpc];
     }
 }

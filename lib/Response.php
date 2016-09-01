@@ -3,11 +3,13 @@ declare(strict_types = 1);
 
 namespace AdvancedJsonRpc;
 
+use JsonSerializable;
+
 /**
  * When a rpc call is made, the Server MUST reply with a Response, except for in the case of Notifications. The Response
  * is expressed as a single JSON Object, with the following members:
  */
-class Response extends Message
+class Response extends Message implements JsonSerializable
 {
     /**
      * This member is REQUIRED. It MUST be the same as the value of the id member in the Request Object. If there was an
@@ -54,5 +56,17 @@ class Response extends Message
         $this->id = $id;
         $this->result = $result;
         $this->error = $error;
+    }
+
+    public function jsonSerialize()
+    {
+        $json = parent::jsonSerialize();
+        $json['id'] = $this->id;
+        if (isset($this->error)) {
+            $json['error'] = $this->error;
+        } else {
+            $json['result'] = $this->result;
+        }
+        return $json;
     }
 }
