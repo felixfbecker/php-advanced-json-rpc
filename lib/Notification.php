@@ -10,7 +10,7 @@ namespace AdvancedJsonRpc;
  * Notifications are not confirmable by definition, since they do not have a Response object to be returned. As such,
  * the Client would not be aware of any errors (like e.g. "Invalid params","Internal error").
  */
-abstract class Notification extends Message
+class Notification extends Message
 {
     /**
      * A String containing the name of the method to be invoked. Method names that begin with the word rpc followed by a
