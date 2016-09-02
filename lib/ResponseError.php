@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace AdvancedJsonRpc;
 
 use Exception;
+use Throwable;
 
 class ResponseError extends Exception
 {
