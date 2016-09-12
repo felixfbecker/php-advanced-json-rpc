@@ -3,8 +3,6 @@ declare(strict_types = 1);
 
 namespace AdvancedJsonRpc;
 
-use JsonSerializable;
-
 /**
  * A Notification is a Request object without an "id" member. A Request object that is a Notification signifies the
  * Client's lack of interest in the corresponding Response object, and as such no Response object needs to be returned
@@ -12,7 +10,7 @@ use JsonSerializable;
  * Notifications are not confirmable by definition, since they do not have a Response object to be returned. As such,
  * the Client would not be aware of any errors (like e.g. "Invalid params","Internal error").
  */
-class Notification extends Message implements JsonSerializable
+class Notification extends Message
 {
     /**
      * A String containing the name of the method to be invoked. Method names that begin with the word rpc followed by a
@@ -54,13 +52,5 @@ class Notification extends Message implements JsonSerializable
     {
         $this->method = $method;
         $this->params = $params;
-    }
-
-    public function jsonSerialize()
-    {
-        $json = parent::jsonSerialize();
-        $json['method'] = $this->method;
-        $json['params'] = $this->params;
-        return $json;
     }
 }

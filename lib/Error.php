@@ -6,7 +6,7 @@ namespace AdvancedJsonRpc;
 use Exception;
 use Throwable;
 
-class ResponseError extends Exception
+class Error extends Exception
 {
     /**
      * A Number that indicates the error type that occurred. This MUST be an integer.

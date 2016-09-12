@@ -5,7 +5,7 @@ namespace AdvancedJsonRpc\Tests;
 
 use StdClass;
 use PHPUnit\Framework\TestCase;
-use AdvancedJsonRpc\{Message, Request, Response, Notification};
+use AdvancedJsonRpc\{Message, Request, Response, SuccessResponse, ErrorResponse, Notification};
 
 class MessageTest extends TestCase
 {
@@ -32,15 +32,29 @@ class MessageTest extends TestCase
         ], get_object_vars($msg));
     }
 
-    public function testParseResponse()
+    public function testParseSuccessResponse()
     {
         $msg = Message::parse('{"jsonrpc": "2.0", "result": 19, "id": 1}');
-        $this->assertInstanceOf(Response::class, $msg);
+        $this->assertInstanceOf(SuccessResponse::class, $msg);
         $this->assertEquals([
             'jsonrpc' => '2.0',
             'result' => 19,
-            'error' => null,
             'id' => 1
         ], get_object_vars($msg));
+    }
+
+    public function testParseErrorResponse()
+    {
+        $msg = Message::parse('{"jsonrpc": "2.0", "error": {"code": -32602, "message": "invalid params"}, "id": 1}');
+        $this->assertInstanceOf(ErrorResponse::class, $msg);
+        $this->assertEquals([
+            'jsonrpc' => '2.0',
+            'error' => [
+                'code' => -32602,
+                'message' => 'invalid params',
+                'data' => null
+            ],
+            'id' => 1
+        ], json_decode(json_encode($msg), true));
     }
 }
