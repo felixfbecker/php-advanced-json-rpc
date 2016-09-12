@@ -2,6 +2,7 @@
 
 [![Version](https://img.shields.io/packagist/v/felixfbecker/advanced-json-rpc.svg)](https://packagist.org/packages/felixfbecker/advanced-json-rpc)
 [![Build Status](https://travis-ci.org/felixfbecker/php-advanced-json-rpc.svg?branch=master)](https://travis-ci.org/felixfbecker/php-advanced-json-rpc)
+[![Coverage](https://codecov.io/gh/felixfbecker/php-advanced-json-rpc/branch/master/graph/badge.svg)](https://codecov.io/gh/felixfbecker/php-advanced-json-rpc)
 [![Dependency Status](https://gemnasium.com/badges/github.com/felixfbecker/php-advanced-json-rpc.svg)](https://gemnasium.com/github.com/felixfbecker/php-advanced-json-rpc)
 [![License](https://img.shields.io/packagist/l/felixfbecker/advanced-json-rpc.svg)](https://packagist.org/packages/felixfbecker/advanced-json-rpc)
 
