@@ -64,7 +64,7 @@ class Dispatcher
         if (is_string($msg)) {
             $msg = json_decode($msg);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new ResponseError(json_last_error_msg(), ErrorCode::PARSE_ERROR);
+                throw new Error(json_last_error_msg(), ErrorCode::PARSE_ERROR);
             }
         }
         // Find out the object and function that should be called
@@ -77,7 +77,7 @@ class Dispatcher
         // the target
         foreach ($parts as $part) {
             if (!isset($obj->$part)) {
-                throw new ResponseError("Method {$msg->method} is not implemented", ErrorCode::METHOD_NOT_FOUND);
+                throw new Error("Method {$msg->method} is not implemented", ErrorCode::METHOD_NOT_FOUND);
             }
             $obj = $obj->$part;
         }
@@ -86,7 +86,7 @@ class Dispatcher
                 $method = new ReflectionMethod($obj, $fn);
                 $this->methods[$msg->method] = $method;
             } catch (ReflectionException $e) {
-                throw new ResponseError($e->getMessage(), ErrorCode::METHOD_NOT_FOUND, null, $e);
+                throw new Error($e->getMessage(), ErrorCode::METHOD_NOT_FOUND, null, $e);
             }
         }
         $method = $this->methods[$msg->method];
@@ -119,7 +119,7 @@ class Dispatcher
                     $args[$position] = $value;
                 }
             } else {
-                throw new ResponseError('Params must be structured or omitted', ErrorCode::INVALID_REQUEST);
+                throw new Error('Params must be structured or omitted', ErrorCode::INVALID_REQUEST);
             }
             foreach ($args as $position => $value) {
                 try {
@@ -151,11 +151,11 @@ class Dispatcher
                             $class = (string)$type->getValueType()->getFqsen();
                             $value = $this->mapper->mapArray($value, [], $class);
                         } else {
-                            throw new ResponseError('Type is not matching @param tag', ErrorCode::INVALID_PARAMS);
+                            throw new Error('Type is not matching @param tag', ErrorCode::INVALID_PARAMS);
                         }
                     }
                 } catch (JsonMapper_Exception $e) {
-                    throw new ResponseError($e->getMessage(), ErrorCode::INVALID_PARAMS, null, $e);
+                    throw new Error($e->getMessage(), ErrorCode::INVALID_PARAMS, null, $e);
                 }
                 $args[$position] = $value;
             }
