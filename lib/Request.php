@@ -3,12 +3,10 @@ declare(strict_types = 1);
 
 namespace AdvancedJsonRpc;
 
-use JsonSerializable;
-
 /**
  * A rpc call is represented by sending a Request object to a Server
  */
-class Request extends Message implements JsonSerializable
+class Request extends Message
 {
     /**
      * An identifier established by the Client that MUST contain a String, Number, or NULL value if included. If it is
@@ -61,16 +59,5 @@ class Request extends Message implements JsonSerializable
         $this->id = $id;
         $this->method = $method;
         $this->params = $params;
-    }
-
-    public function jsonSerialize()
-    {
-        $json = parent::jsonSerialize();
-        $json['id'] = $this->id;
-        $json['method'] = $this->method;
-        if (isset($this->params)) {
-            $json['params'] = $this->params;
-        }
-        return $json;
     }
 }
