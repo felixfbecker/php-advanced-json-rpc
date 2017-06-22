@@ -35,6 +35,8 @@ abstract class Message
             $obj = new SuccessResponse($decoded->id, $decoded->result);
         } else if (ErrorResponse::isErrorResponse($decoded)) {
             $obj = new ErrorResponse($decoded->id, new Error($decoded->error->message, $decoded->error->code, $decoded->error->data ?? null));
+        } else {
+            throw new Error('Invalid message', ErrorCode::INVALID_REQUEST);
         }
         return $obj;
     }

@@ -25,7 +25,7 @@ class SuccessResponse extends Response
      */
     public static function isSuccessResponse($msg): bool
     {
-        return is_object($msg) && isset($msg->id) && isset($msg->result);
+        return is_object($msg) && property_exists($msg, 'id') && property_exists($msg, 'result');
     }
 
     /**

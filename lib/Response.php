@@ -25,7 +25,7 @@ abstract class Response extends Message
      */
     public static function isResponse($msg): bool
     {
-        return is_object($msg) && isset($msg->id) && (isset($msg->result) || isset($msg->error));
+        return is_object($msg) && property_exists($msg, 'id') && (property_exists($msg, 'result') || isset($msg->error));
     }
 
     /**

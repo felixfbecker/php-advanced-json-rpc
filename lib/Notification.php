@@ -41,7 +41,7 @@ class Notification extends Message
      */
     public static function isNotification($msg): bool
     {
-        return is_object($msg) && !isset($msg->id) && isset($msg->method);
+        return is_object($msg) && !property_exists($msg, 'id') && isset($msg->method);
     }
 
     /**
