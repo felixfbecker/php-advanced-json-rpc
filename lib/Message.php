@@ -25,7 +25,7 @@ abstract class Message
     {
         $decoded = json_decode($msg);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new ResponseError(json_last_error_msg(), ErrorCode::PARSE_ERROR);
+            throw new Error(json_last_error_msg(), ErrorCode::PARSE_ERROR);
         }
         if (Notification::isNotification($decoded)) {
             $obj = new Notification($decoded->method, $decoded->params ?? null);
