@@ -3,8 +3,13 @@ language: php
 php:
  - '7.0'
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.npm
+
 install:
- - composer install
+ - composer install --prefer-dist
 
 script:
  - vendor/bin/phpunit --coverage-clover=coverage.xml --whitelist lib --bootstrap vendor/autoload.php tests
