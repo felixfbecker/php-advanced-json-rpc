@@ -1,5 +1,7 @@
 # Advanced JSONRPC
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/felixfbecker/php-advanced-json-rpc.svg)](https://greenkeeper.io/)
+
 [![Version](https://img.shields.io/packagist/v/felixfbecker/advanced-json-rpc.svg)](https://packagist.org/packages/felixfbecker/advanced-json-rpc)
 [![Build Status](https://travis-ci.org/felixfbecker/php-advanced-json-rpc.svg?branch=master)](https://travis-ci.org/felixfbecker/php-advanced-json-rpc)
 [![Coverage](https://codecov.io/gh/felixfbecker/php-advanced-json-rpc/branch/master/graph/badge.svg)](https://codecov.io/gh/felixfbecker/php-advanced-json-rpc)
