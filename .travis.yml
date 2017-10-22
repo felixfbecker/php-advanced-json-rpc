@@ -11,3 +11,6 @@ script:
 
 after_success:
  - bash <(curl -s https://codecov.io/bash)
+ - nvm install 8 && nvm use 8
+ - npm install
+ - npm run semantic-release
