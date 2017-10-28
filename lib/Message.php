@@ -43,6 +43,10 @@ abstract class Message
 
     public function __toString(): string
     {
-        return json_encode($this);
+        $encoded = json_encode($this);
+        if ($encoded === false) {
+            throw new Error(json_last_error_msg(), ErrorCode::INTERNAL_ERROR);
+        }
+        return $encoded;
     }
 }
