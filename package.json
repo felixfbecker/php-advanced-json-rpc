@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "commitmsg": "validate-commit-msg",
-    "semantic-release": "semantic-release pre && semantic-release post"
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
+    "@semantic-release/last-release-git-tag": "^1.0.0",
     "cz-conventional-changelog": "^2.0.0",
     "husky": "^0.14.3",
-    "last-release-git": "^0.0.3",
-    "semantic-release": "^8.2.0",
+    "semantic-release": "^10.0.0",
     "validate-commit-msg": "^2.14.0"
   },
   "config": {
@@ -19,7 +19,9 @@
     }
   },
   "release": {
-    "getLastRelease": "last-release-git"
+    "verifyConditions": "@semantic-release/github",
+    "getLastRelease": "@semantic-release/last-release-git-tag",
+    "publish": "@semantic-release/github"
   },
   "repository": {
     "type": "git",

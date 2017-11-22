@@ -5,7 +5,7 @@ php:
 
 env:
   global:
-    - BUILD_LEADER_ID=1
+    - BUILD_LEADER_ID=2
 
 cache:
   directories:
@@ -20,11 +20,19 @@ script:
 
 after_success:
  - bash <(curl -s https://codecov.io/bash)
- - git config --replace-all remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
- - git fetch --tags
- - nvm install 8 && nvm use 8
- - npm install
- - npm run semantic-release
+
+jobs:
+  include:
+    - stage: release
+      language: node_js
+      node_js: '8'
+      script:
+        - npm run semantic-release
+
+stages:
+  - test
+  - name: release
+    if: branch = master AND type = push AND fork = false
 
 branches:
   except:
