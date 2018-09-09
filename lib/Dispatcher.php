@@ -104,19 +104,15 @@ class Dispatcher
             if (is_array($msg->params)) {
                 $args = $msg->params;
             } else if (is_object($msg->params)) {
-                foreach (get_object_vars($msg->params) as $key => $value) {
-                    $position = -1;
-                    foreach ($parameters as $pos => $parameter) {
+                foreach ($parameters as $pos => $parameter) {
+                    $value = null;
+                    foreach(get_object_vars($msg->params) as $key => $val) {
                         if ($parameter->name === $key) {
-                            $position = $pos;
+                            $value = $val;
                             break;
                         }
                     }
-                    if ($position === -1) {
-                        // Unknown parameter, ignore
-                        continue;
-                    }
-                    $args[$position] = $value;
+                    $args[$pos] = $value;
                 }
             } else {
                 throw new Error('Params must be structured or omitted', ErrorCode::INVALID_REQUEST);
