@@ -1,26 +1,23 @@
 {
-  "name": "php-language-server",
-  "version": "0.0.0-development",
   "private": true,
   "scripts": {
-    "commitmsg": "validate-commit-msg",
+    "commitmsg": "commitlint -e $GIT_PARAMS",
     "semantic-release": "semantic-release"
   },
   "devDependencies": {
-    "@semantic-release/last-release-git-tag": "^2.0.0",
-    "cz-conventional-changelog": "^2.0.0",
+    "@commitlint/cli": "^7.1.2",
+    "@commitlint/config-conventional": "^7.1.2",
     "husky": "^0.14.3",
-    "semantic-release": "^11.0.0",
-    "validate-commit-msg": "^2.14.0"
+    "semantic-release": "^15.9.14"
   },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "release": {
     "verifyConditions": "@semantic-release/github",
-    "getLastRelease": "@semantic-release/last-release-git-tag",
+    "prepare": [],
     "publish": "@semantic-release/github"
   },
   "repository": {

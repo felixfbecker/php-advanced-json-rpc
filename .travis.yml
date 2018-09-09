@@ -2,7 +2,7 @@ language: php
 
 env:
   global:
-    - BUILD_LEADER_ID=2
+    - FORCE_COLOR=1
 
 cache:
   directories:
