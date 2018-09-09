@@ -50,6 +50,13 @@ class DispatcherTest extends TestCase
         $this->assertEquals($this->calls, [new MethodCall('someMethodWithArrayParamTag', [[new Argument('whatever')]])]);
     }
 
+    public function testCallMethodWithMissingArgument()
+    {
+        $result = $this->dispatcher->dispatch((string)new Request(1, 'someMethodWithDifferentlyTypedArgs', ['arg2' => 0]));
+        $this->assertEquals('Hello World', $result);
+        $this->assertEquals($this->calls, [new MethodCall('someMethodWithDifferentlyTypedArgs', [0 => null, 1 => 0])]);
+    }
+
     public function testCallMethodWithUnionTypeParamTag()
     {
         $result = $this->dispatcher->dispatch((string)new Request(1, 'someMethodWithUnionTypeParamTag', ['arg' => [new Argument('whatever')]]));
@@ -64,4 +71,6 @@ class DispatcherTest extends TestCase
         $this->assertEquals($this->calls, []);
         $this->assertEquals($this->callsOfNestedTarget, [new MethodCall('someMethodWithTypeHint', [new Argument('whatever')])]);
     }
+
+
 }
