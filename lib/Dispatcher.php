@@ -54,7 +54,7 @@ class Dispatcher
     }
 
     /**
-     * Calls the appropiate method handler for an incoming Message
+     * Calls the appropriate method handler for an incoming Message
      *
      * @param string|object $msg The incoming message
      * @return Result|void

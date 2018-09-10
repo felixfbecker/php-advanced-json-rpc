@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/packagist/l/felixfbecker/advanced-json-rpc.svg)](https://github.com/felixfbecker/php-advanced-json-rpc/blob/master/LICENSE)
 
 Provides basic classes for requests and responses in JSONRPC and a `Dispatcher` class that can decode a JSONRPC request
-and call appropiate methods on a target, coercing types of parameters by type-hints and `@param` tags.
+and call appropriate methods on a target, coercing types of parameters by type-hints and `@param` tags.
 
 Supports nested targets: If the method is something like `myNestedTarget->theMethod`, the dispatcher will look for a
 `myNestedTarget` property on the target and call `theMethod` on it. The delimiter is configurable and defaults to the
