@@ -7,5 +7,6 @@
 /.npmrc export-ignore
 /codecov.yml export-ignore
 /package.json export-ignore
+/package-lock.json export-ignore
 /dependencies.yml export-ignore
 /README.md export-ignore
