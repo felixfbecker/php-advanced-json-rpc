@@ -16,7 +16,7 @@ abstract class Message
     public $jsonrpc = '2.0';
 
     /**
-     * Returns the appropiate Message subclass
+     * Returns the appropriate Message subclass
      *
      * @param string $msg
      * @return Message
