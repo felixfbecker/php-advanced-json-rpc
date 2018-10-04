@@ -57,7 +57,7 @@ class Dispatcher
      * Calls the appropriate method handler for an incoming Message
      *
      * @param string|object $msg The incoming message
-     * @return Result|void
+     * @return mixed
      */
     public function dispatch($msg)
     {
