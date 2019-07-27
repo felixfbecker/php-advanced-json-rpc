@@ -10,6 +10,7 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionNamedType;
 
 class Dispatcher
 {
@@ -124,7 +125,15 @@ class Dispatcher
                         // Does the parameter have a type hint?
                         $param = $parameters[$position];
                         if ($param->hasType()) {
-                            $class = (string)$param->getType();
+                            $paramType = $param->getType();
+                            if ($paramType instanceof ReflectionNamedType) {
+                                // We have object data to map and want the class name.
+                                // This should not include the `?` if the type was nullable.
+                                $class = $paramType->getName();
+                            } else {
+                                // Fallback for php 7.0, which is still supported (and doesn't have nullable).
+                                $class = (string)$paramType;
+                            }
                             $value = $this->mapper->map($value, new $class());
                         }
                     } else if (is_array($value) && isset($docBlock)) {
