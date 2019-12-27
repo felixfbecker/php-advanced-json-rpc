@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace AdvancedJsonRpc;
 
-use Sabre\Event\Loop;
 use JsonMapper;
 use JsonMapper_Exception;
 use phpDocumentor\Reflection\DocBlockFactory;
