@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace AdvancedJsonRpc;
 
-use AdvancedJsonRpc\Reflection\NativeReflection;
+use AdvancedJsonRpc\Reflection;
 use JsonMapper;
 use JsonMapper_Exception;
 
@@ -20,7 +20,7 @@ class Dispatcher
     private $delimiter;
 
     /**
-     * @var Reflection\NativeReflection
+     * @var Reflection\ReflectionInterface
      */
     private $reflection;
 
@@ -38,7 +38,7 @@ class Dispatcher
         $this->target = $target;
         $this->delimiter = $delimiter;
         $this->mapper = new JsonMapper();
-        $this->reflection = new NativeReflection();
+        $this->reflection = new Reflection\NativeReflection();
     }
 
     /**
@@ -97,18 +97,18 @@ class Dispatcher
                     // If the type is structured (array or object), map it with JsonMapper
                     if (is_object($value)) {
                         // Does the parameter have a type hint?
-                        $param = $method->getParameters()[$position];
+                        $param = $method->getParameter($position);
                         if ($param->hasType()) {
                             $class = $param->getType()->getName();
                             $value = $this->mapper->map($value, new $class());
                         }
-                    } else if (is_array($value) && $method->getDocComment() !== '') {
-                        if (!array_key_exists($position, $method->getParamTags())) {
-                            throw new Error('Type is not matching @param tag', ErrorCode::INVALID_PARAMS);
+                    } else if (is_array($value)) {
+                        if (!$method->hasParameter($position)) {
+                            throw new Error('Type information is missing', ErrorCode::INVALID_PARAMS);
                         }
 
                         // Get the array type from the DocBlock
-                        $class = $method->getParamTags()[$position]->getType()->getName();
+                        $class = $method->getParameter($position)->getType()->getName();
                         $value = $this->mapper->mapArray($value, [], $class);
                     }
                 } catch (JsonMapper_Exception $e) {

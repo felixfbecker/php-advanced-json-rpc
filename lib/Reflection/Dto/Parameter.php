@@ -30,6 +30,6 @@ class Parameter
 
     public function hasType(): bool
     {
-        return isset($this->type);
+        return $this->type !== null;
     }
 }
