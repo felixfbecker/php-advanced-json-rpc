@@ -13,7 +13,7 @@ class DispatcherTest extends TestCase
     private $callsOfNestedTarget;
     private $dispatcher;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->calls = [];
         $this->callsOfNestedTarget = [];
