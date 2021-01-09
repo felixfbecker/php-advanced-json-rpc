@@ -8,14 +8,7 @@ matrix:
     - php: 7.3
     - php: 7.4
     - php: 8.0
-      # Ignore the platform requirements for the upcoming PHP version
     - php: nightly
-      env:
-        PHP_INI='xdebug.mode=coverage'
-    - php: nightly
-      env:
-        COMPOSER_UPDATE_FLAGS='--prefer-lowest --prefer-stable'
-        PHP_INI='xdebug.mode=coverage'
   allow_failures:
     - php: nightly
   fast_finish: true
