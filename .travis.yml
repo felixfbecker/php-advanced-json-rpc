@@ -1,25 +1,50 @@
-language: php
+# TravisCI configuration for felixfbecker/php-advanced-json-rpc
 
-matrix:
-  include:
-    - php: 7.1
-    - php: 7.2
-    - php: 7.3
-    - php: 7.4
-    - php: 8.0
-    - php: nightly
-  allow_failures:
-    - php: nightly
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
+
+language: php
+os:
+  - "linux"
+dist: "xenial"
+
+php:
+  - "7.1"
+  - "7.2"
+  - "7.3"
+  - "7.4"
+  - "8.0"
+  - nightly
+
+stages:
+  - name: test
+  - name: release
+    if: branch = master AND type = push AND fork = false
+
+jobs:
   fast_finish: true
+  include:
+    - stage: release
+      language: node_js
+      node_js: "8"
+      install:
+        - npm ci
+      script:
+        - npm run semantic-release
+      after_success: skip
+  allow_failures:
+    - stage: test
+      php: nightly
 
 env:
   global:
     - FORCE_COLOR=1
 
 cache:
+  npm: true
   directories:
     - $HOME/.composer/cache
-    - $HOME/.npm
 
 install:
   - composer install --prefer-dist
@@ -29,23 +54,3 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-
-jobs:
-  include:
-    - stage: release
-      language: node_js
-      node_js: '8'
-      install:
-        - npm ci
-      script:
-        - npm run semantic-release
-      after_success: false
-
-stages:
-  - test
-  - name: release
-    if: branch = master AND type = push AND fork = false
-
-branches:
-  except:
-   - /^v\d+\.\d+\.\d+$/
