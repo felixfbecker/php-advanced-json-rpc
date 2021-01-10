@@ -34,7 +34,8 @@ jobs:
         - npm run semantic-release
       after_success: skip
   allow_failures:
-    - php: nightly
+    - stage: test
+      php: nightly
 
 env:
   global:
