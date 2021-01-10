@@ -50,7 +50,7 @@ install:
   - composer install --prefer-dist
 
 script:
-  - vendor/bin/phpunit --coverage-clover=coverage.xml --whitelist lib --bootstrap vendor/autoload.php tests
+  - XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover=coverage.xml --whitelist lib --bootstrap vendor/autoload.php tests
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
