@@ -63,7 +63,6 @@ class DispatcherTest extends TestCase
         $this->assertEquals('Hello World', $result);
         $this->assertEquals($this->calls, [new MethodCall('someMethodWithUnionTypeParamTag', [[new Argument('whatever')]])]);
     }
-
     public function testCallMethodWithTypeHintWithNamedArgsOnNestedTarget()
     {
         $result = $this->dispatcher->dispatch((string)new Request(1, 'nestedTarget->someMethodWithTypeHint', ['arg' => new Argument('whatever')]));
@@ -72,5 +71,11 @@ class DispatcherTest extends TestCase
         $this->assertEquals($this->callsOfNestedTarget, [new MethodCall('someMethodWithTypeHint', [new Argument('whatever')])]);
     }
 
+    public function testCallMethodWithArrayTypeHintAndDocblock(): void
+    {
+        $result = $this->dispatcher->dispatch((string)new Request(1, 'someMethodWithArrayTypeHint', ['args' => [new Argument('1'), new Argument('2')]]));
+        $this->assertEquals('Hello World', $result);
+        $this->assertEquals($this->calls, [new MethodCall('someMethodWithArrayTypeHint', [[new Argument('1'), new Argument('2')]])]);
+    }
 
 }
