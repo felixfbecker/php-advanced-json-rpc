@@ -3,13 +3,9 @@ declare(strict_types = 1);
 
 namespace AdvancedJsonRpc;
 
+use AdvancedJsonRpc\Reflection;
 use JsonMapper;
 use JsonMapper_Exception;
-use phpDocumentor\Reflection\DocBlockFactory;
-use phpDocumentor\Reflection\Types;
-use ReflectionException;
-use ReflectionMethod;
-use ReflectionNamedType;
 
 class Dispatcher
 {
@@ -24,21 +20,14 @@ class Dispatcher
     private $delimiter;
 
     /**
-     * method => ReflectionMethod[]
-     *
-     * @var ReflectionMethod
+     * @var Reflection\ReflectionInterface
      */
-    private $methods;
+    private $reflection;
 
     /**
-     * @var \phpDocumentor\Reflection\DocBlockFactory
+     * @var JsonMapper
      */
-    private $docBlockFactory;
-
-    /**
-     * @var \phpDocumentor\Reflection\Types\ContextFactory
-     */
-    private $contextFactory;
+    private $mapper;
 
     /**
      * @param object $target    The target object that should receive the method calls
@@ -48,9 +37,8 @@ class Dispatcher
     {
         $this->target = $target;
         $this->delimiter = $delimiter;
-        $this->docBlockFactory = DocBlockFactory::createInstance();
-        $this->contextFactory = new Types\ContextFactory();
         $this->mapper = new JsonMapper();
+        $this->reflection = new Reflection\NativeReflection();
     }
 
     /**
@@ -81,33 +69,19 @@ class Dispatcher
             }
             $obj = $obj->$part;
         }
-        if (!isset($this->methods[$msg->method])) {
-            try {
-                $method = new ReflectionMethod($obj, $fn);
-                $this->methods[$msg->method] = $method;
-            } catch (ReflectionException $e) {
-                throw new Error($e->getMessage(), ErrorCode::METHOD_NOT_FOUND, null, $e);
-            }
-        }
-        $method = $this->methods[$msg->method];
-        $parameters = $method->getParameters();
-        if ($method->getDocComment()) {
-            $docBlock = $this->docBlockFactory->create(
-                $method->getDocComment(),
-                $this->contextFactory->createFromReflector($method->getDeclaringClass())
-            );
-            $paramTags = $docBlock->getTagsByName('param');
-        }
+
+        $method = $this->reflection->getMethodDetails($msg->method, $obj, $fn);
+
         $args = [];
         if (isset($msg->params)) {
             // Find out the position
             if (is_array($msg->params)) {
                 $args = $msg->params;
             } else if (is_object($msg->params)) {
-                foreach ($parameters as $pos => $parameter) {
+                foreach ($method->getParameters() as $pos => $parameter) {
                     $value = null;
                     foreach(get_object_vars($msg->params) as $key => $val) {
-                        if ($parameter->name === $key) {
+                        if ($parameter->getName() === $key) {
                             $value = $val;
                             break;
                         }
@@ -117,46 +91,25 @@ class Dispatcher
             } else {
                 throw new Error('Params must be structured or omitted', ErrorCode::INVALID_REQUEST);
             }
+
             foreach ($args as $position => $value) {
                 try {
                     // If the type is structured (array or object), map it with JsonMapper
                     if (is_object($value)) {
                         // Does the parameter have a type hint?
-                        $param = $parameters[$position];
+                        $param = $method->getParameter($position);
                         if ($param->hasType()) {
-                            $paramType = $param->getType();
-                            if ($paramType instanceof ReflectionNamedType) {
-                                // We have object data to map and want the class name.
-                                // This should not include the `?` if the type was nullable.
-                                $class = $paramType->getName();
-                            } else {
-                                // Fallback for php 7.0, which is still supported (and doesn't have nullable).
-                                $class = (string)$paramType;
-                            }
+                            $class = $param->getType()->getName();
                             $value = $this->mapper->map($value, new $class());
                         }
-                    } else if (is_array($value) && isset($docBlock)) {
-                        // Get the array type from the DocBlock
-                        $type = $paramTags[$position]->getType();
-                        // For union types, use the first one that is a class array (often it is SomeClass[]|null)
-                        if ($type instanceof Types\Compound) {
-                            for ($i = 0; $t = $type->get($i); $i++) {
-                                if (
-                                    $t instanceof Types\Array_
-                                    && $t->getValueType() instanceof Types\Object_
-                                    && (string)$t->getValueType() !== 'object'
-                                ) {
-                                    $class = (string)$t->getValueType()->getFqsen();
-                                    $value = $this->mapper->mapArray($value, [], $class);
-                                    break;
-                                }
-                            }
-                        } else if ($type instanceof Types\Array_) {
-                            $class = (string)$type->getValueType()->getFqsen();
-                            $value = $this->mapper->mapArray($value, [], $class);
-                        } else {
-                            throw new Error('Type is not matching @param tag', ErrorCode::INVALID_PARAMS);
+                    } else if (is_array($value)) {
+                        if (!$method->hasParameter($position)) {
+                            throw new Error('Type information is missing', ErrorCode::INVALID_PARAMS);
                         }
+
+                        // Get the array type from the DocBlock
+                        $class = $method->getParameter($position)->getType()->getName();
+                        $value = $this->mapper->mapArray($value, [], $class);
                     }
                 } catch (JsonMapper_Exception $e) {
                     throw new Error($e->getMessage(), ErrorCode::INVALID_PARAMS, null, $e);
