@@ -49,4 +49,13 @@ class Target
         $this->calls[] = new MethodCall('someMethodWithDifferentlyTypedArgs', func_get_args());
         return 'Hello World';
     }
+
+    /**
+     * @param ?string $arg
+     */
+    public function someMethodWithNullableTypeParamTag($arg): string
+    {
+        $this->calls[] = new MethodCall('someMethodWithNullableTypeParamTag', func_get_args());
+        return 'Hello World';
+    }
 }
