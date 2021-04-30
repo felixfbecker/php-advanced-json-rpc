@@ -41,6 +41,11 @@ class Dispatcher
     private $contextFactory;
 
     /**
+     * @var JsonMapper\JsonMapperInterface
+     */
+    private $mapper;
+
+    /**
      * @param object $target    The target object that should receive the method calls
      * @param string $delimiter A delimiter for method calls on properties, for example someProperty->someMethod
      */
@@ -50,7 +55,9 @@ class Dispatcher
         $this->delimiter = $delimiter;
         $this->docBlockFactory = DocBlockFactory::createInstance();
         $this->contextFactory = new Types\ContextFactory();
-        $this->mapper = new JsonMapper();
+        $this->mapper = (new JsonMapper\JsonMapperBuilder())
+            ->withDocBlockAnnotationsMiddleware()
+            ->build();
     }
 
     /**
@@ -118,48 +125,46 @@ class Dispatcher
                 throw new Error('Params must be structured or omitted', ErrorCode::INVALID_REQUEST);
             }
             foreach ($args as $position => $value) {
-                try {
-                    // If the type is structured (array or object), map it with JsonMapper
-                    if (is_object($value)) {
-                        // Does the parameter have a type hint?
-                        $param = $parameters[$position];
-                        if ($param->hasType()) {
-                            $paramType = $param->getType();
-                            if ($paramType instanceof ReflectionNamedType) {
-                                // We have object data to map and want the class name.
-                                // This should not include the `?` if the type was nullable.
-                                $class = $paramType->getName();
-                            } else {
-                                // Fallback for php 7.0, which is still supported (and doesn't have nullable).
-                                $class = (string)$paramType;
-                            }
-                            $value = $this->mapper->map($value, new $class());
-                        }
-                    } else if (is_array($value) && isset($docBlock)) {
-                        // Get the array type from the DocBlock
-                        $type = $paramTags[$position]->getType();
-                        // For union types, use the first one that is a class array (often it is SomeClass[]|null)
-                        if ($type instanceof Types\Compound) {
-                            for ($i = 0; $t = $type->get($i); $i++) {
-                                if (
-                                    $t instanceof Types\Array_
-                                    && $t->getValueType() instanceof Types\Object_
-                                    && (string)$t->getValueType() !== 'object'
-                                ) {
-                                    $class = (string)$t->getValueType()->getFqsen();
-                                    $value = $this->mapper->mapArray($value, [], $class);
-                                    break;
-                                }
-                            }
-                        } else if ($type instanceof Types\Array_) {
-                            $class = (string)$type->getValueType()->getFqsen();
-                            $value = $this->mapper->mapArray($value, [], $class);
+                // If the type is structured (array or object), map it with JsonMapper
+                if (is_object($value)) {
+                    // Does the parameter have a type hint?
+                    $param = $parameters[$position];
+                    if ($param->hasType()) {
+                        $paramType = $param->getType();
+                        if ($paramType instanceof ReflectionNamedType) {
+                            // We have object data to map and want the class name.
+                            // This should not include the `?` if the type was nullable.
+                            $class = $paramType->getName();
                         } else {
-                            throw new Error('Type is not matching @param tag', ErrorCode::INVALID_PARAMS);
+                            // Fallback for php 7.0, which is still supported (and doesn't have nullable).
+                            $class = (string)$paramType;
                         }
+                        $result = new $class();
+                        $this->mapper->mapObject($value, $result);
+                        $value = $result;
                     }
-                } catch (JsonMapper_Exception $e) {
-                    throw new Error($e->getMessage(), ErrorCode::INVALID_PARAMS, null, $e);
+                } else if (is_array($value) && isset($docBlock)) {
+                    // Get the array type from the DocBlock
+                    $type = $paramTags[$position]->getType();
+                    // For union types, use the first one that is a class array (often it is SomeClass[]|null)
+                    if ($type instanceof Types\Compound) {
+                        for ($i = 0; $t = $type->get($i); $i++) {
+                            if (
+                                $t instanceof Types\Array_
+                                && $t->getValueType() instanceof Types\Object_
+                                && (string)$t->getValueType() !== 'object'
+                            ) {
+                                $class = (string)$t->getValueType()->getFqsen();
+                                $value = $this->mapper->mapArray($value, new $class);
+                                break;
+                            }
+                        }
+                    } else if ($type instanceof Types\Array_) {
+                        $class = (string)$type->getValueType()->getFqsen();
+                        $value = $this->mapper->mapArray($value, new $class);
+                    } else {
+                        throw new Error('Type is not matching @param tag', ErrorCode::INVALID_PARAMS);
+                    }
                 }
                 $args[$position] = $value;
             }
