@@ -72,5 +72,10 @@ class DispatcherTest extends TestCase
         $this->assertEquals($this->callsOfNestedTarget, [new MethodCall('someMethodWithTypeHint', [new Argument('whatever')])]);
     }
 
-
+    public function testSomeMethodWithNullableTypeParamTag(): void
+    {
+        $result = $this->dispatcher->dispatch((string)new Request(1, 'someMethodWithNullableTypeParamTag', ['arg' => null]));
+        $this->assertEquals('Hello World', $result);
+        $this->assertEquals($this->calls, [new MethodCall('someMethodWithNullableTypeParamTag', [null])]);
+    }
 }
