@@ -39,6 +39,10 @@ class Dispatcher
      * @var \phpDocumentor\Reflection\Types\ContextFactory
      */
     private $contextFactory;
+    /**
+     * @var JsonMapper
+     */
+    private $mapper;
 
     /**
      * @param object $target    The target object that should receive the method calls
