@@ -41,6 +41,11 @@ class Dispatcher
     private $contextFactory;
 
     /**
+     * @var \JsonMapper
+     */
+    private $mapper;
+
+    /**
      * @param object $target    The target object that should receive the method calls
      * @param string $delimiter A delimiter for method calls on properties, for example someProperty->someMethod
      */
