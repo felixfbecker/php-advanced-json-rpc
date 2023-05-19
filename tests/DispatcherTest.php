@@ -63,7 +63,6 @@ class DispatcherTest extends TestCase
         $this->assertEquals('Hello World', $result);
         $this->assertEquals($this->calls, [new MethodCall('someMethodWithUnionTypeParamTag', [[new Argument('whatever')]])]);
     }
-
     public function testCallMethodWithTypeHintWithNamedArgsOnNestedTarget()
     {
         $result = $this->dispatcher->dispatch((string)new Request(1, 'nestedTarget->someMethodWithTypeHint', ['arg' => new Argument('whatever')]));
@@ -72,5 +71,31 @@ class DispatcherTest extends TestCase
         $this->assertEquals($this->callsOfNestedTarget, [new MethodCall('someMethodWithTypeHint', [new Argument('whatever')])]);
     }
 
+    public function testCallMethodWithArrayTypeHintAndDocblock(): void
+    {
+        $result = $this->dispatcher->dispatch((string)new Request(1, 'someMethodWithArrayTypeHint', ['args' => [new Argument('1'), new Argument('2')]]));
+        $this->assertEquals('Hello World', $result);
+        $this->assertEquals($this->calls, [new MethodCall('someMethodWithArrayTypeHint', [[new Argument('1'), new Argument('2')]])]);
+    }
 
+    public function testCallMethodWithAdditionalProvidedParamsOnSomeMethodWithoutArgs()
+    {
+        $result = $this->dispatcher->dispatch((string) new Request(1, 'someMethodWithoutArgs', ['arg' => new Argument('whatever')]));
+        $this->assertEquals('Hello World', $result);
+        $this->assertEquals($this->calls, [new MethodCall('someMethodWithoutArgs', [])]);
+    }
+
+    public function testCallMethodWithAdditionalProvidedParamsOnSomeMethodWithTypeHint()
+    {
+        $result = $this->dispatcher->dispatch((string) new Request(1, 'someMethodWithTypeHint', ['arg' => new Argument('whatever'), 'arg2' => new Argument('anything')]));
+        $this->assertEquals('Hello World', $result);
+        $this->assertEquals($this->calls, [new MethodCall('someMethodWithTypeHint', [new Argument('whatever')])]);
+    }
+
+    public function testSomeMethodWithNullableTypeParamTag(): void
+    {
+        $result = $this->dispatcher->dispatch((string)new Request(1, 'someMethodWithNullableTypeParamTag', ['arg' => null]));
+        $this->assertEquals('Hello World', $result);
+        $this->assertEquals($this->calls, [new MethodCall('someMethodWithNullableTypeParamTag', [null])]);
+    }
 }
