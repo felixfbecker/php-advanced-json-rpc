@@ -49,4 +49,13 @@ class Target
         $this->calls[] = new MethodCall('someMethodWithDifferentlyTypedArgs', func_get_args());
         return 'Hello World';
     }
+
+    /**
+     * @param Argument[] $args
+     */
+    public function someMethodWithArrayTypeHint(array $args): string
+    {
+        $this->calls[] = new MethodCall('someMethodWithArrayTypeHint', func_get_args());
+        return 'Hello World';
+    }
 }
