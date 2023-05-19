@@ -152,7 +152,7 @@ class Dispatcher
                                 }
                             }
                         } else if ($type instanceof Types\Array_) {
-                            $class = (string)$type->getValueType()->getFqsen();
+                            $class = (string) $type->getValueType()->getFqsen();
                             $value = $this->mapper->mapArray($value, [], $class);
                         } else {
                             throw new Error('Type is not matching @param tag', ErrorCode::INVALID_PARAMS);
