@@ -133,7 +133,9 @@ class Dispatcher
                                 // Fallback for php 7.0, which is still supported (and doesn't have nullable).
                                 $class = (string)$paramType;
                             }
-                            $value = $this->mapper->map($value, new $class());
+                            if ($class !== 'mixed') {
+                                $value = $this->mapper->map($value, new $class());
+                            }
                         }
                     } else if (is_array($value) && isset($docBlock)) {
                         // Get the array type from the DocBlock
