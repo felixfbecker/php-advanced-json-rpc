@@ -44,11 +44,11 @@ class Target
         return 'Hello World';
     }
 
-    public function someMethodWithMixedTypeParam(mixed $arg)
+    /*public function someMethodWithMixedTypeParam(mixed $arg)
     {
         $this->calls[] = new MethodCall('someMethodWithMixedTypeParam', func_get_args());
         return 'Hello World';
-    }
+    }*/
 
     public function someMethodWithDifferentlyTypedArgs(string $arg1 = null, int $arg2 = null)
     {
