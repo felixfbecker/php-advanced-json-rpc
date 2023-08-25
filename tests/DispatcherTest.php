@@ -57,6 +57,14 @@ class DispatcherTest extends TestCase
         $this->assertEquals($this->calls, [new MethodCall('someMethodWithDifferentlyTypedArgs', [0 => null, 1 => 0])]);
     }
 
+    public function testCallMethodWithMixedParam()
+    {
+        $result = $this->dispatcher->dispatch((string)new Request(1, 'someMethodWithMixedTypeParam', ['arg' => new Argument('whatever')]));
+        $this->assertEquals('Hello World', $result);
+        $this->assertIsObject($this->calls[0]->args[0]);
+        $this->assertEquals($this->calls, [new MethodCall('someMethodWithMixedTypeParam', [0 => $this->calls[0]->args[0]])]);
+    }
+
     public function testCallMethodWithUnionTypeParamTag()
     {
         $result = $this->dispatcher->dispatch((string)new Request(1, 'someMethodWithUnionTypeParamTag', ['arg' => [new Argument('whatever')]]));
